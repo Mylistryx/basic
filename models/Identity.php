@@ -1,107 +1,59 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models;
 
-use yii\base\BaseObject;
+use app\traits\IdentityTrait;
+use yii\base\Exception;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
-class Identity extends BaseObject implements IdentityInterface
+/**
+ * Class Identity
+ * @property int $id
+ * @property string $email
+ * @property string $auth_key
+ * @property string $password_hash
+ * @property int $current_status
+ * @property string|null $access_token
+ * @property string|null $password_reset_token
+ * @property string|null $email_confirmation_token
+ * @property-read string $authKey
+ * @property-write string $password
+ * @property int $status
+ */
+class Identity extends ActiveRecord implements IdentityInterface
 {
-    public $id;
-    public $username;
-    public $password;
-    public $authKey;
-    public $accessToken;
-
-    private static array $users = [
-        '100' => [
-            'id' => '100',
-            'username' => 'admin',
-            'password' => 'admin',
-            'authKey' => 'test100key',
-            'accessToken' => '100-token',
-        ],
-        '101' => [
-            'id' => '101',
-            'username' => 'demo',
-            'password' => 'demo',
-            'authKey' => 'test101key',
-            'accessToken' => '101-token',
-        ],
-    ];
-
+    use IdentityTrait;
 
     /**
      * {@inheritdoc}
      */
-    public static function findIdentity($id)
+    public function behaviors(): array
     {
-        return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
+        return [
+            'TimeStamp' => [
+                'class' => TimestampBehavior::class,
+            ],
+        ];
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $email
+     * @param string $password
+     * @return static
+     * @throws Exception
      */
-    public static function findIdentityByAccessToken($token, $type = null)
+    public static function create(string $email, string $password): self
     {
-        foreach (self::$users as $user) {
-            if ($user['accessToken'] === $token) {
-                return new static($user);
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Finds user by username
-     *
-     * @param string $username
-     * @return static|null
-     */
-    public static function findByUsername($username)
-    {
-        foreach (self::$users as $user) {
-            if (strcasecmp($user['username'], $username) === 0) {
-                return new static($user);
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getAuthKey()
-    {
-        return $this->authKey;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function validateAuthKey($authKey)
-    {
-        return $this->authKey === $authKey;
-    }
-
-    /**
-     * Validates password
-     *
-     * @param string $password password to validate
-     * @return bool if password provided is valid for current user
-     */
-    public function validatePassword($password)
-    {
-        return $this->password === $password;
+        $identity = new self();
+        $identity->email = $email;
+        $identity->setPassword($password);
+        $identity->generateAuthKey();
+        $identity->generateEmailConfirmationToken();
+        $identity->save();
+        return $identity;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\forms;
 
 use Yii;
@@ -7,35 +9,37 @@ use yii\base\Model;
 
 /**
  * ContactForm is the model behind the contact form.
+ * @property string $name
+ * @property string $email
+ * @property string $subject
+ * @property string $body
+ * @property string $verifyCode
  */
-class ContactForm extends Model
+final class ContactForm extends Model
 {
-    public $name;
-    public $email;
-    public $subject;
-    public $body;
-    public $verifyCode;
+    public string $name = '';
+    public string $email = '';
+    public string $subject = '';
+    public string $body = '';
+    public string $verifyCode = '';
 
 
     /**
-     * @return array the validation rules.
+     * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            // name, email, subject and body are required
             [['name', 'email', 'subject', 'body'], 'required'],
-            // email has to be a valid email address
             ['email', 'email'],
-            // verifyCode needs to be entered correctly
             ['verifyCode', 'captcha'],
         ];
     }
 
     /**
-     * @return array customized attribute labels
+     * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'verifyCode' => 'Verification Code',
@@ -45,21 +49,19 @@ class ContactForm extends Model
     /**
      * Sends an email to the specified email address using the information collected by this model.
      * @param string $email the target email address
-     * @return bool whether the model passes validation
+     * @return bool true when model validated and email is sent
      */
-    public function contact($email)
+    public function contact(string $email): bool
     {
-        if ($this->validate()) {
-            Yii::$app->mailer->compose()
-                ->setTo($email)
-                ->setFrom([Yii::$app->params['senderEmail'] => Yii::$app->params['senderName']])
-                ->setReplyTo([$this->email => $this->name])
-                ->setSubject($this->subject)
-                ->setTextBody($this->body)
-                ->send();
-
-            return true;
+        if (!$this->validate()) {
+            return false;
         }
-        return false;
+        return Yii::$app->mailer->compose()
+            ->setTo($email)
+            ->setFrom([Yii::$app->params['senderEmail'] => Yii::$app->params['senderName']])
+            ->setReplyTo([$this->email => $this->name])
+            ->setSubject($this->subject)
+            ->setTextBody($this->body)
+            ->send();
     }
 }

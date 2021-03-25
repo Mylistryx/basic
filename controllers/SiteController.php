@@ -1,49 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\controllers;
 
 use app\forms\ContactForm;
-use app\forms\LoginForm;
 use Yii;
 use yii\captcha\CaptchaAction;
-use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\ErrorAction;
 use yii\web\Response;
-use yii\filters\VerbFilter;
 
-class SiteController extends Controller
+/**
+ * Class SiteController
+ */
+final class SiteController extends Controller
 {
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::class,
-                'only'  => ['logout'],
-                'rules' => [
-                    [
-                        'actions' => ['logout'],
-                        'allow'   => true,
-                        'roles'   => ['@'],
-                    ],
-                ],
-            ],
-            'verbs'  => [
-                'class'   => VerbFilter::class,
-                'actions' => [
-                    'logout' => ['post'],
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function actions()
+    public function actions(): array
     {
         return [
             'error'   => [
@@ -61,46 +37,9 @@ class SiteController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
+    public function actionIndex(): string
     {
         return $this->render('index');
-    }
-
-    /**
-     * Login action.
-     *
-     * @return Response|string
-     */
-    public function actionLogin()
-    {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
-
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
-        }
-
-        $model->password = '';
-        return $this->render(
-            'login',
-            [
-                'model' => $model,
-            ]
-        );
-    }
-
-    /**
-     * Logout action.
-     *
-     * @return Response
-     */
-    public function actionLogout()
-    {
-        Yii::$app->user->logout();
-
-        return $this->goHome();
     }
 
     /**
@@ -129,7 +68,7 @@ class SiteController extends Controller
      *
      * @return string
      */
-    public function actionAbout()
+    public function actionAbout(): string
     {
         return $this->render('about');
     }

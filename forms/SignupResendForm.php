@@ -11,11 +11,11 @@ use yii\base\Exception;
 use yii\base\Model;
 
 /**
- * Class PasswordResetRequestForm
+ * Class SignupResendForm
  * @property string $email
- * @property-read Identity|null $identity
+ * @property-read null|Identity $identity
  */
-final class PasswordResetRequestForm extends Model
+final class SignupResendForm extends Model
 {
     public string $email = '';
 
@@ -27,15 +27,13 @@ final class PasswordResetRequestForm extends Model
         return [
             ['email', 'trim'],
             ['email', 'required'],
-            ['email', 'email'],
             [
                 'email',
                 'exist',
                 'targetClass' => Identity::class,
-                'filter'      => ['current_status' => IdentityStatus::STATUS_ACTIVE],
-                'message'     => 'There is no active identity with this email address.',
+                'filter'      => ['current_status' => IdentityStatus::STATUS_INACTIVE],
+                'message'     => 'There is no inactive user with this email address.',
             ],
-
         ];
     }
 
@@ -43,13 +41,15 @@ final class PasswordResetRequestForm extends Model
      * @return bool
      * @throws Exception
      */
-    public function request(): bool
+    public function resend(): bool
     {
-        if ($this->validate() && ($identity = $this->getIdentity()) !== null) {
-            $identity->generatePasswordResetToken();
-            return $identity->save() && $this->sendEmail($identity);
+        if (!$this->validate()) {
+            return false;
         }
-        return false;
+
+        $identity = $this->getIdentity();
+        $identity->generateEmailConfirmationToken();
+        return $identity->save() && $this->sendEmail($identity);
     }
 
     /**
@@ -72,10 +72,10 @@ final class PasswordResetRequestForm extends Model
     {
         return Yii::$app->mailer
             ->compose(
-                ['html' => 'passwordResetToken-html', 'text' => 'passwordResetToken-text'],
+                ['html' => 'emailVerify-html', 'text' => 'emailVerify-text'],
                 ['identity' => $identity]
             )
-            ->setSubject('Password reset for ' . Yii::$app->name)
+            ->setSubject('Confirm your email on ' . Yii::$app->name)
             ->setFrom([Yii::$app->params['senderEmail'] => Yii::$app->params['senderName']])
             ->setTo($identity->email)
             ->send();

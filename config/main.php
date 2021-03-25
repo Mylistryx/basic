@@ -41,7 +41,7 @@ return [
         ],
         'mailer' => [
             'class'            => Mailer::class,
-            'viewPath'         => 'app/mail',
+            'viewPath'         => '@app/mail',
             'useFileTransport' => true,
         ],
     ],

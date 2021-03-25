@@ -16,7 +16,8 @@ return [
             'class'           => User::class,
             'identityClass'   => Identity::class,
             'enableAutoLogin' => true,
-            'loginUrl'        => ['site/login'],
+            'loginUrl'        => ['auth/login'],
+            'returnUrl' => '',
             'identityCookie'  => ['name' => '_identity-frontend', 'httpOnly' => true],
         ],
         'session'      => [

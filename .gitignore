@@ -29,5 +29,8 @@ phpunit.phar
 tests/_output/*
 tests/_support/_generated
 
-#vagrant folder
-/.vagrant
+web/index.php
+web/index-test.php
+web/robots.txt
+
+config/*-local.php

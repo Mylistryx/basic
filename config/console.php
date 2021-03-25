@@ -1,46 +1,24 @@
 <?php
 
-$params = require __DIR__ . '/params.php';
-$db = require __DIR__ . '/db.php';
+use app\models\Identity;
+use yii\console\controllers\FixtureController;
+use yii\web\User;
 
-$config = [
-    'id'                  => 'basic-console',
-    'basePath'            => dirname(__DIR__),
-    'bootstrap'           => ['log'],
+return [
+    'id'                  => 'application-console',
     'controllerNamespace' => 'app\console',
-    'aliases'             => [
-        '@bower' => '@vendor/bower-asset',
-        '@npm'   => '@vendor/npm-asset',
-        '@tests' => '@app/tests',
-    ],
     'components'          => [
-        'cache' => [
-            'class' => yii\caching\FileCache::class,
+        'user' => [
+            'class'           => User::class,
+            'identityClass'   => Identity::class,
+            'enableAutoLogin' => false,
+            'loginUrl'        => false,
         ],
-        'log'   => [
-            'targets' => [
-                [
-                    'class'  => yii\log\FileTarget::class,
-                    'levels' => ['error', 'warning'],
-                ],
-            ],
-        ],
-        'db'    => $db,
     ],
-    'params'              => $params,
     'controllerMap'       => [
         'fixture' => [
-            'class' => yii\faker\FixtureController::class,
+            'class'     => FixtureController::class,
+            'namespace' => 'app\fixtures',
         ],
     ],
 ];
-
-if (YII_ENV_DEV) {
-    // configuration adjustments for 'dev' environment
-    $config['bootstrap'][] = 'gii';
-    $config['modules']['gii'] = [
-        'class' => yii\gii\Module::class,
-    ];
-}
-
-return $config;

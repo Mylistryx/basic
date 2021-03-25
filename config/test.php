@@ -1,43 +1,25 @@
 <?php
 
-$params = require __DIR__ . '/params.php';
-$db = require __DIR__ . '/test_db.php';
-
-/**
- * Application configuration shared by all test types
- */
 return [
-    'id'         => 'basic-tests',
-    'basePath'   => dirname(__DIR__),
-    'aliases'    => [
-        '@bower' => '@vendor/bower-asset',
-        '@npm'   => '@vendor/npm-asset',
-    ],
-    'language'   => 'en-US',
+    'id'         => 'application-test',
     'components' => [
-        'db'           => $db,
-        'mailer'       => [
-            'useFileTransport' => true,
-        ],
         'assetManager' => [
-            'basePath' => __DIR__ . '/../web/assets',
+            'basePath' => dirname(__DIR__) . '/web/assets',
         ],
         'urlManager'   => [
-            'showScriptName' => true,
-        ],
-        'user'         => [
-            'identityClass' => app\models\User::class,
+            'showScriptName'  => true,
+            'enablePrettyUrl' => false,
         ],
         'request'      => [
-            'cookieValidationKey'  => 'test',
-            'enableCsrfValidation' => false,
-            // but if you absolutely need it set cookie domain to localhost
-            /*
-            'csrfCookie' => [
-                'domain' => 'localhost',
-            ],
-            */
+            'cookieValidationKey' => 'test',
+            'csrfParam'           => '_csrf-test',
+        ],
+        'session'      => [
+            // this is the name of the session cookie used for login on the frontend
+            'name' => 'application-test',
+        ],
+        'user'         => [
+            'identityCookie' => ['name' => '_identity-test', 'httpOnly' => true],
         ],
     ],
-    'params'     => $params,
 ];

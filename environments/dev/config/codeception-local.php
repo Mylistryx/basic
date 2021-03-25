@@ -5,6 +5,8 @@ use yii\helpers\ArrayHelper;
 return ArrayHelper::merge(
     require __DIR__ . '/main.php',
     require __DIR__ . '/main-local.php',
+    require __DIR__ . '/console.php',
+    require __DIR__ . '/console-local.php',
     require __DIR__ . '/test.php',
     require __DIR__ . '/test-local.php',
     [
@@ -14,9 +16,5 @@ return ArrayHelper::merge(
                 'cookieValidationKey' => '',
             ],
         ],
-        'params'     => ArrayHelper::merge(
-            require __DIR__ . '/params.php',
-            require __DIR__ . '/params-local.php',
-        ),
     ]
 );

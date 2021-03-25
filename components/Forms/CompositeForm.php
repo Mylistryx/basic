@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\components\Forms;
 
 use yii\base\Model;
+use yii\base\UnknownPropertyException;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -163,6 +164,11 @@ abstract class CompositeForm extends Model
         return $result;
     }
 
+    /**
+     * @param string $name
+     * @return array|mixed|Model
+     * @throws UnknownPropertyException
+     */
     public function __get($name)
     {
         if (isset($this->innerForms[$name])) {
@@ -171,6 +177,11 @@ abstract class CompositeForm extends Model
         return parent::__get($name);
     }
 
+    /**
+     * @param string $name
+     * @param mixed $value
+     * @throws UnknownPropertyException
+     */
     public function __set($name, $value)
     {
         if (in_array($name, $this->internalForms(), true)) {
@@ -180,7 +191,11 @@ abstract class CompositeForm extends Model
         }
     }
 
-    public function __isset($name)
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function __isset($name): bool
     {
         return isset($this->innerForms[$name]) || parent::__isset($name);
     }

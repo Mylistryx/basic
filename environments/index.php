@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The manifest of files that are local to specific environment.
  * This file returns a list of environments that the application
@@ -30,30 +31,31 @@
  */
 return [
     'Development' => [
-        'path' => 'dev',
-        'setWritable' => [
+        'path'                   => 'dev',
+        'setWritable'            => [
             'runtime',
             'web/assets',
         ],
-        'setExecutable' => [
+        'setExecutable'          => [
             'yii',
             'yii_test',
         ],
         'setCookieValidationKey' => [
-            'config/main-local.php',
+            'config/codeception-local.php',
+            'config/web-local.php',
         ],
     ],
-    'Production' => [
-        'path' => 'prod',
-        'setWritable' => [
+    'Production'  => [
+        'path'                   => 'prod',
+        'setWritable'            => [
             'runtime',
             'web/assets',
         ],
-        'setExecutable' => [
+        'setExecutable'          => [
             'yii',
         ],
         'setCookieValidationKey' => [
-            'config/main-local.php',
+            'config/web-local.php',
         ],
     ],
 ];

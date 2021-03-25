@@ -5,7 +5,7 @@ namespace app\models;
 use yii\base\BaseObject;
 use yii\web\IdentityInterface;
 
-class User extends BaseObject implements IdentityInterface
+class Identity extends BaseObject implements IdentityInterface
 {
     public $id;
     public $username;
@@ -13,7 +13,7 @@ class User extends BaseObject implements IdentityInterface
     public $authKey;
     public $accessToken;
 
-    private static $users = [
+    private static array $users = [
         '100' => [
             'id' => '100',
             'username' => 'admin',

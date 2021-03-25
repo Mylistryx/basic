@@ -29,8 +29,14 @@ phpunit.phar
 tests/_output/*
 tests/_support/_generated
 
+# local config files and entry points
 web/index.php
 web/index-test.php
 web/robots.txt
-
 config/*-local.php
+
+# console files
+yii
+yii.bat
+yii_test
+yii_test.bat

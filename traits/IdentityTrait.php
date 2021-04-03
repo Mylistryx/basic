@@ -25,7 +25,50 @@ trait IdentityTrait
      */
     public static function findIdentityByAccessToken($token, $type = null): ?self
     {
-        return static::findOne(['access_token' => $token, 'current_status' => IdentityStatus::STATUS_ACTIVE]);
+        return static::findOne(
+            [
+                'access_token'   => $token,
+                'current_status' => IdentityStatus::STATUS_ACTIVE,
+            ]
+        );
+    }
+
+    /**
+     * @param string $email
+     * @return static|null
+     */
+    public static function findIdentityByEmail(string $email): ?self
+    {
+        return static::findOne(
+            [
+                'email'          => $email,
+                'current_status' => IdentityStatus::STATUS_ACTIVE,
+            ]
+        );
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDisabled(): bool
+    {
+        return $this->current_status === IdentityStatus::STATUS_DISABLED;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isInactive(): bool
+    {
+        return $this->current_status === IdentityStatus::STATUS_INACTIVE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActive(): bool
+    {
+        return $this->current_status === IdentityStatus::STATUS_ACTIVE;
     }
 
     /**
@@ -36,7 +79,11 @@ trait IdentityTrait
      */
     public static function findByEmail(string $email): ?self
     {
-        return static::findOne(['email' => $email]);
+        return static::findOne(
+            [
+                'email' => $email,
+            ]
+        );
     }
 
     /**
@@ -83,7 +130,7 @@ trait IdentityTrait
         return static::findOne(
             [
                 'password_reset_token' => $token,
-                'current_status'               => IdentityStatus::STATUS_ACTIVE,
+                'current_status'       => IdentityStatus::STATUS_ACTIVE,
             ]
         );
     }
@@ -94,7 +141,12 @@ trait IdentityTrait
      */
     public static function findByEmailConfirmationToken(string $token): ?self
     {
-        return Identity::findOne(['email_confirmation_token' => $token, 'current_status' => IdentityStatus::STATUS_INACTIVE]);
+        return Identity::findOne(
+            [
+                'email_confirmation_token' => $token,
+                'current_status'           => IdentityStatus::STATUS_INACTIVE,
+            ]
+        );
     }
 
     /**

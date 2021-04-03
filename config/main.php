@@ -1,5 +1,7 @@
 <?php
 
+use app\modules\admin\AdminModule;
+use app\modules\api\ApiModule;
 use yii\caching\FileCache;
 use yii\db\Connection;
 use yii\log\FileTarget;
@@ -12,10 +14,22 @@ $params = array_merge(
 
 return [
     'basePath'   => dirname(__DIR__),
-    'bootstrap'           => ['log'],
+    'bootstrap'  => [
+        'log',
+        'admin',
+        'api',
+    ],
     'aliases'    => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
+    ],
+    'modules'    => [
+        'admin' => [
+            'class' => AdminModule::class,
+        ],
+        'api'   => [
+            'class' => ApiModule::class,
+        ],
     ],
     'vendorPath' => dirname(__DIR__) . '/vendor',
     'components' => [

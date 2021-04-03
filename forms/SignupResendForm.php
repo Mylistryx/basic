@@ -43,25 +43,12 @@ final class SignupResendForm extends Model
      */
     public function resend(): bool
     {
-        if (!$this->validate()) {
-            return false;
-        }
-
-        $identity = $this->getIdentity();
-        $identity->generateEmailConfirmationToken();
-        return $identity->save() && $this->sendEmail($identity);
-    }
-
-    /**
-     * @return Identity|null
-     */
-    public function getIdentity(): ?Identity
-    {
-        static $identity = false;
-        if ($identity === false) {
+        if ($this->validate()) {
             $identity = Identity::findByEmail($this->email);
+            $identity->generateEmailConfirmationToken();
+            return $identity->save() && $this->sendEmail($identity);
         }
-        return $identity;
+        return false;
     }
 
     /**

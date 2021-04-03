@@ -33,7 +33,7 @@ final class AuthController extends Controller
                     ],
                 ],
             ],
-            'verbs'         => [
+            'VerbFilter'    => [
                 'class'   => VerbFilter::class,
                 'actions' => [
                     'logout' => ['post'],
@@ -64,6 +64,10 @@ final class AuthController extends Controller
      */
     public function actionLogout(): Response
     {
+        if (Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+
         Yii::$app->user->logout();
         return $this->goHome();
     }

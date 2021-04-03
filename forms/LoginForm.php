@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\forms;
 
 use app\models\Identity;
+use app\models\IdentityStatus;
 use Yii;
 use yii\base\Model;
 
@@ -31,6 +32,13 @@ final class LoginForm extends Model
             [['email', 'password'], 'required'],
             ['rememberMe', 'boolean'],
             ['password', 'validatePassword'],
+            [
+                'email',
+                'exist',
+                'targetClass' => Identity::class,
+                'filter'      => ['current_status' => IdentityStatus::STATUS_ACTIVE],
+                'message'     => 'There is no active identity with this email address.',
+            ],
         ];
     }
 

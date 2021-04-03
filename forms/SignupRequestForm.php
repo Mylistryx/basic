@@ -39,11 +39,10 @@ final class SignupRequestForm extends Model
      */
     public function request(): bool
     {
-        if (!$this->validate()) {
-            return false;
+        if ($this->validate()) {
+            return (($identity = Identity::create($this->email, $this->password)) !== null && $this->sendEmail($identity));
         }
-
-        return (($identity = Identity::create($this->email, $this->password)) !== null && $this->sendEmail($identity));
+        return false;
     }
 
     /**

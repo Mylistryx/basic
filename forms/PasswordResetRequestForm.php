@@ -45,23 +45,12 @@ final class PasswordResetRequestForm extends Model
      */
     public function request(): bool
     {
-        if ($this->validate() && ($identity = $this->getIdentity()) !== null) {
+        if ($this->validate()) {
+            $identity = Identity::findIdentityByEmail($this->email);
             $identity->generatePasswordResetToken();
             return $identity->save() && $this->sendEmail($identity);
         }
         return false;
-    }
-
-    /**
-     * @return Identity|null
-     */
-    public function getIdentity(): ?Identity
-    {
-        static $identity = false;
-        if ($identity === false) {
-            $identity = Identity::findByEmail($this->email);
-        }
-        return $identity;
     }
 
     /**

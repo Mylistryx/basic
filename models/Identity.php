@@ -48,7 +48,7 @@ class Identity extends ActiveRecord implements IdentityInterface
      */
     public static function create(string $email, string $password): self
     {
-        $identity = new self();
+        $identity = new static();
         $identity->email = $email;
         $identity->setPassword($password);
         $identity->generateAuthKey();
